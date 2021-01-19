@@ -1,0 +1,23 @@
+{
+  "name": "ciq-bms",
+  "version": "1.0.0",
+  "description": "BookMyShow application for CommereceIQ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "author": "Anmol Saxena",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-basic-auth": "^1.2.0",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.7",
+    "swagger-jsdoc": "^6.0.1",
+    "swagger-ui-express": "^4.1.6"
+  }
+}
