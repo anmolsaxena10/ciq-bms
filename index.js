@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const swaggerUi = require("swagger-ui-express");
 require('dotenv').config();
 const swaggerSpec = require("./utils/swagger");
+const models = require("./utils/models");
 
 const app = express();
 app.use(morgan('combined'));
@@ -14,6 +15,7 @@ app.use(
 );
 app.use(bodyParser.json());
 
+models.syncModels();
 
 app.get("/", function(req, res){
     res.status(200).json("Docs are at /api-docs");

@@ -1,23 +1,43 @@
 const basicAuth = require('express-basic-auth');
 const bcrypt = require('bcrypt');
-// const saltRounds = 10;
+const { User } = require('./models');
 
 function loginAuthorizer(admin = false){
-    function authorizer(username, password) {
-        const userMatches = basicAuth.safeCompare(username, 'admin')
-        const passwordMatches = basicAuth.safeCompare(password, '1234')
+    async function authorizer(email, password, cb) {
+        const userMatches = basicAuth.safeCompare(email, 'admin');
+        const passwordMatches = basicAuth.safeCompare(password, '1234');
+        
+        if(userMatches & passwordMatches){
+            return cb(null, true);
+        }
+        else{
+            try{
+                const user = await User.findOne({
+                    where: {
+                        email: email
+                    }
+                });
 
-        // get user and verify like this
-        // bcrypt.compare(myPlaintextPassword, hash).then(function(result) {
-        //     // result == true
-        // });
+                if(user === undefined)
+                    return cb(null, false);
+                    
+                let verified = await bcrypt.compare(password, user.pass_hash);
 
-        return userMatches & passwordMatches & admin;
+                if(admin){
+                    verified = verified && user.is_admin;
+                }
+                return cb(null, verified);
+            }
+            catch(error){
+                return cb(null, false);
+            }
+        }
     }
     
     return basicAuth({ 
         authorizer: authorizer,
-        challenge: true
+        challenge: true,
+        authorizeAsync: true,
     });
 }
 
