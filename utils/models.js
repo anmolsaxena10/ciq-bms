@@ -55,12 +55,7 @@ const City = sequelize.define('city', {
         type: Sequelize.STRING,
         allowNull: false,
         unique: 'cityUnique'
-    },
-    state:{
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: 'cityUnique'
-    },
+    }
 });
 
 const Movie = sequelize.define('movie', {
@@ -91,6 +86,11 @@ const Theatre = sequelize.define('theatre', {
         defaultValue: Sequelize.UUIDV4,
         primaryKey: true
     },
+    cityId:{
+        type: Sequelize.UUID,
+        allowNull: false,
+        unique: "TheatreUnique"
+    },
     name: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -99,9 +99,9 @@ const Theatre = sequelize.define('theatre', {
 });
 
 City.hasMany(Theatre, {
-    unique: "TheatreUnique"
+    targetKey: 'cityId'
 });
-Theatre.belongsTo(City);
+Theatre.belongsTo(City, {sourceKey: 'id'});
 
 const Seat = sequelize.define('seat', {
     id:{
