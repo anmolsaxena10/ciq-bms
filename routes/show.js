@@ -27,13 +27,13 @@ const { Validator } = require('node-input-validator');
  */
 
 
- /**
+/**
  * @swagger
- * /show/{id}:
+ * /show:
  *  get:
  *    description: Get all shows of a movie
  *    parameters:
- *     - in: path
+ *     - in: query
  *       name: id
  *       schema:
  *        type: string
@@ -58,7 +58,6 @@ const { Validator } = require('node-input-validator');
  *        description: Successful
  *    security:
  *       - basicAuth: []
- * /show:
  *  post:
  *    description: Add new show
  *    requestBody:
@@ -74,15 +73,15 @@ const { Validator } = require('node-input-validator');
  *       - basicAuth: []
  */
 
-router.get("/:id", loginAuthorizer(false), async function (req, res) {
-	let showId = req.params.id;
+router.get("/", loginAuthorizer(false), async function (req, res) {
+	let showId = req.query.id;
     let movieId = req.query.movieId;
     let theatreId = req.query.theatreId;
     let cityId = req.query.cityId;
 
     console.log(typeof(showId), movieId, theatreId, cityId);
 
-    if(showId !== '{id}'){
+    if(showId){
         const show = await models.Show.findOne({
             where: {
                 id: showId
@@ -159,21 +158,39 @@ router.post("/", loginAuthorizer(true), async function(req, res){
 	}
 	else{
 		try{
-			
-            let show = await models.Show.create({
-                movieId: payload.movieId,
-                theatreId: payload.theatreId,
-                startDatetime: payload.startDatetime
-            });
+			if(payload.theatreId !== "*"){
+                let show = await models.Show.create({
+                    movieId: payload.movieId,
+                    theatreId: payload.theatreId,
+                    startDatetime: payload.startDatetime
+                });
+                
+                res.status(200).send({
+                    id: show.id,
+                    movie: show.movieId,
+                    theatreId: show.theatreId,
+                    startDatetime: show.startDatetime
+                });
+            }
+            else{
+                let theatres = await models.Theatre.findAll({
+                    attributes: ["id"]
+                });
 
-			console.log(show.toJSON());
+                let shows = [];
 
-			res.status(200).send({
-                id: show.id,
-				movie: show.movieId,
-                theatreId: show.theatreId,
-                startDatetime: show.startDatetime
-			});
+                theatres.forEach(t => {
+                    shows.push({
+                        movieId: payload.movieId,
+                        theatreId: t.id,
+                        startDatetime: payload.startDatetime
+                    });
+                });
+
+                if(shows.length > 0)
+                    await models.Show.bulkCreate(shows);
+                res.status(200).send({"message": "successfully added"});
+            }
 		}
 		catch(error){
 			console.log(error);
