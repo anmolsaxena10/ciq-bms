@@ -125,12 +125,17 @@ const Seat = sequelize.define('seat', {
         allowNull:false,
         unique: "seatUnique"
     },
+    theatreId: {
+        type: Sequelize.UUID,
+        allowNull: false,
+        unique: "seatUnique"
+    }
 });
 
 Theatre.hasMany(Seat, {
-    unique: "seatUnique"
+    targetKey: 'theatreId'
 });
-Seat.belongsTo(Theatre);
+Seat.belongsTo(Theatre, {sourceKey: 'id'});
 
 const Show = sequelize.define('show', {
     id:{
@@ -139,21 +144,31 @@ const Show = sequelize.define('show', {
         defaultValue: Sequelize.UUIDV4,
         primaryKey: true
     },
-    startTime:{
+    startDatetime:{
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW,
+        allowNull: false,
         unique: "showUnique"
     },
+    movieId: {
+        type: Sequelize.UUID,
+        allowNull: false,
+        unique: "showUnique"
+    },
+    theatreId: {
+        type: Sequelize.UUID,
+        allowNull: false,
+        unique: "showUnique"
+    }
 });
 
 Movie.hasMany(Show, {
-    unique: "showUnique"
+    targetKey: 'movieId'
 });
 Theatre.hasMany(Show, {
-    unique: "showUnique"
+    targetKey: 'theatreId'
 })
-Show.belongsTo(Movie);
-Show.belongsTo(Theatre);
+Show.belongsTo(Movie, {sourceKey: 'id'});
+Show.belongsTo(Theatre, {sourceKey: 'id'});
 
 const Booking = sequelize.define('booking', {
     id:{
@@ -166,13 +181,25 @@ const Booking = sequelize.define('booking', {
         type: Sequelize.REAL,
         allowNull:false,
         defaultValue: 0
+    },
+    userId: {
+        type: Sequelize.UUID,
+        allowNull: false,
+    },
+    showId: {
+        type: Sequelize.UUID,
+        allowNull: false,
     }
 })
 
-User.hasMany(Booking);
-Show.hasMany(Booking);
-Booking.belongsTo(User);
-Booking.belongsTo(Show);
+User.hasMany(Booking, {
+    targetKey: 'userId'
+});
+Show.hasMany(Booking, {
+    targetKey: 'showId'
+});
+Booking.belongsTo(User, {sourceKey: 'id'});
+Booking.belongsTo(Show, {sourceKey: 'id'});
 
 const Booked_Seat = sequelize.define('booked_seat', {
     id:{
@@ -184,21 +211,36 @@ const Booked_Seat = sequelize.define('booked_seat', {
     status: {
         type: Sequelize.BOOLEAN,
         defaultValue: false
+    },
+    showId: {
+        type: Sequelize.UUID,
+        allowNull: false,
+        unique: "bookedSeatUnique"
+    },
+    seatId: {
+        type: Sequelize.UUID,
+        allowNull: false,
+        unique: "bookedSeatUnique"
+    },
+    bookingId: {
+        type: Sequelize.UUID,
+        allowNull: false,
+        unique: "bookedSeatUnique"
     }
 });
 
 Show.hasMany(Booked_Seat, {
-    unique: "bookedSeatUnique"
+    targetKey: 'showId'
 });
 Seat.hasMany(Booked_Seat, {
-    unique: "bookedSeatUnique"
+    targetKey: 'seatId'
 });
 Booking.hasMany(Booked_Seat, {
-    unique: "bookedSeatUnique"
+    targetKey: 'bookingId'
 });
-Booked_Seat.belongsTo(Show);
-Booked_Seat.belongsTo(Seat);
-Booked_Seat.belongsTo(Booking);
+Booked_Seat.belongsTo(Show, {sourceKey: 'id'});
+Booked_Seat.belongsTo(Seat, {sourceKey: 'id'});
+Booked_Seat.belongsTo(Booking, {sourceKey: 'id'});
 
 const syncModels = async function(){
     await sequelize.sync();

@@ -7,7 +7,7 @@ const swaggerSpec = require("./utils/swagger");
 const models = require("./utils/models");
 
 const app = express();
-app.use(morgan('combined'));
+app.use(morgan('tiny'));
 app.use(
   bodyParser.urlencoded({
     extended: true,

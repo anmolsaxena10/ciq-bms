@@ -87,7 +87,6 @@ router.post("/", loginAuthorizer(true), async function(req, res){
 	}
 	else{
 		try{
-			console.log("Here");
 			payload.city = payload.city.toLowerCase();
 			payload.name = payload.name.toLowerCase();
 
@@ -97,7 +96,6 @@ router.post("/", loginAuthorizer(true), async function(req, res){
 				}
 			});
 			if(!city){
-				console.log("ASHAHJHJAHS");
 				city = await models.City.create({
 					name: payload.city
 				});
