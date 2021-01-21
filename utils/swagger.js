@@ -31,7 +31,7 @@ const options = {
           url: "http://anmol-saxena.com/commereceiq-bms/api/",
         },
         {
-          url: "http://localhost:3000/api/",
+          url: "http://localhost:3000/commereceiq-bms/api/",
         }
       ],
     },

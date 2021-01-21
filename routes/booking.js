@@ -60,7 +60,7 @@ const { Validator } = require('node-input-validator');
  *       - basicAuth: []
  */
 
-router.get("/", loginAuthorizer(false), async function (req, res) {
+router.get("/:id", loginAuthorizer(false), async function (req, res) {
     // res.status(200).send([]);
     
     const v = new Validator(req.params, {
@@ -81,8 +81,16 @@ router.get("/", loginAuthorizer(false), async function (req, res) {
 				id: bookingId
 			}
 		});
-		let seats = booking.getBooked_Seats();
-		let show = booking.getShow();
+		let seats = models.Booked_Seat.findAll({
+			where: {
+				bookingId: booking.id
+			}
+		});
+		let show = models.Show.findOne({
+			where: {
+				id: booking.showId
+			}
+		});
 		Promise.all([seats, show])
 		.then(async result => {
 			let booked_seats = result[0];
@@ -90,7 +98,7 @@ router.get("/", loginAuthorizer(false), async function (req, res) {
 
 			let seatIds = [];
 			booked_seats.forEach(seat => {
-				seatIds.push(seat.id);
+				seatIds.push(seat.seatId);
 			});
 
 			let seats = await models.Seat.findAll({
