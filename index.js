@@ -17,17 +17,17 @@ app.use(bodyParser.json());
 
 models.syncModels();
 
-app.get("/", function(req, res){
+app.get("/commereceiq-bms/", function(req, res){
     res.status(200).json("Docs are at /api-docs");
 });
 
 app.use(
-  "/api-docs",
+  "/commereceiq-bms/api-docs",
   swaggerUi.serve,
   swaggerUi.setup(swaggerSpec, { explorer: true })
 );
 
-app.use("/api/", require("./routes/index"));
+app.use("/commereceiq-bms/api/", require("./routes/index"));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT);
