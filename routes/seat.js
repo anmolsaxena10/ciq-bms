@@ -104,7 +104,7 @@ router.get("/", loginAuthorizer(false), async function (req, res) {
                 where: {
                     showId: showId
                 },
-                attributes: ["id"]
+                attributes: ["seatId"]
             });
 
             let seats = models.Seat.findAll({
@@ -120,7 +120,7 @@ router.get("/", loginAuthorizer(false), async function (req, res) {
 
                 let booked_map = {};
                 booked_seats.forEach(seat => {
-                    booked_map[seat.id] = true;
+                    booked_map[seat.seatId] = true;
                 });
 
                 let output = [];
@@ -188,7 +188,6 @@ router.post("/", loginAuthorizer(true), async function(req, res){
 			console.log(error);
 			res.status(500).send(error.message);
         }
-        res.status(200).send([]);
 	}
 
 });

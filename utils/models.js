@@ -224,8 +224,7 @@ const Booked_Seat = sequelize.define('booked_seat', {
     },
     bookingId: {
         type: Sequelize.UUID,
-        allowNull: false,
-        unique: "bookedSeatUnique"
+        allowNull: false
     }
 });
 
@@ -257,5 +256,6 @@ module.exports = {
     City: City,
     Movie: Movie,
     Theatre: Theatre,
-    syncModels: syncModels
+    syncModels: syncModels,
+    sequelize: sequelize
 }
