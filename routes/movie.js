@@ -51,7 +51,7 @@ const { Validator } = require('node-input-validator');
 
 router.get("/", loginAuthorizer(false), async function (req, res) {
 	const movies = await models.Movie.findAll({
-		attributes: ['name', 'releaseDate', 'description']
+		attributes: ['id', 'name', 'releaseDate', 'description']
 	});
 	res.status(200).json(movies);
 });
@@ -78,6 +78,7 @@ router.post("/", loginAuthorizer(true), async function(req, res){
 			});
 
 			res.status(200).send({
+				id: movie.id,
 				name: movie.name,
 				releaseDate: movie.releaseDate,
 				description: movie.description

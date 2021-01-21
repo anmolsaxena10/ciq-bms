@@ -79,8 +79,6 @@ router.get("/", loginAuthorizer(false), async function (req, res) {
     let theatreId = req.query.theatreId;
     let cityId = req.query.cityId;
 
-    console.log(typeof(showId), movieId, theatreId, cityId);
-
     if(showId){
         const show = await models.Show.findOne({
             where: {

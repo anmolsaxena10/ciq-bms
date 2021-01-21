@@ -50,19 +50,17 @@ const { Validator } = require('node-input-validator');
  *    responses:
  *      '200':
  *        description: Successful
- *    security:
- *       - basicAuth: []
  */
 
 router.get("/", loginAuthorizer(true), async function (req, res) {
 	const users = await models.User.findAll({
-		attributes: ['name', 'email', 'is_admin']
+		attributes: ['id', 'name', 'email', 'is_admin']
 	});
 	res.status(200).json(users);
 });
 
 
-router.post("/", loginAuthorizer(true), async function(req, res){
+router.post("/", async function(req, res){
 	let payload = req.body;
 
 	const v = new Validator(payload, {
@@ -93,7 +91,8 @@ router.post("/", loginAuthorizer(true), async function(req, res){
 			res.status(200).send({
 				name: user.name,
 				email: user.email,
-				is_admin: user.is_admin
+				is_admin: user.is_admin,
+				id: user.id
 			});
 		}
 		catch(error){
