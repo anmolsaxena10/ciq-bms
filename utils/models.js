@@ -42,6 +42,10 @@ const User = sequelize.define('user', {
         type: Sequelize.BOOLEAN,
         defaultValue: false
     }
+},{
+    indexes: [
+        { fields: ["email"] }
+    ]
 });
 
 const City = sequelize.define('city', {
@@ -96,6 +100,10 @@ const Theatre = sequelize.define('theatre', {
         allowNull: false,
         unique: "TheatreUnique"
     }
+},{
+    indexes: [
+        { fields: ["cityId"] }
+    ]
 });
 
 City.hasMany(Theatre, {
@@ -130,6 +138,10 @@ const Seat = sequelize.define('seat', {
         allowNull: false,
         unique: "seatUnique"
     }
+},{
+    indexes: [
+        { fields: ["theatreId"] }
+    ]
 });
 
 Theatre.hasMany(Seat, {
@@ -159,6 +171,11 @@ const Show = sequelize.define('show', {
         allowNull: false,
         unique: "showUnique"
     }
+},{
+    indexes: [
+        { fields: ["movieId"] },
+        { fields: ["theatreId"] }
+    ]
 });
 
 Movie.hasMany(Show, {
@@ -190,7 +207,12 @@ const Booking = sequelize.define('booking', {
         type: Sequelize.UUID,
         allowNull: false,
     }
-})
+},{
+    indexes: [
+        { fields: ["userId"] },
+        { fields: ["showId"] }
+    ]
+});
 
 User.hasMany(Booking, {
     targetKey: 'userId'
@@ -208,10 +230,6 @@ const Booked_Seat = sequelize.define('booked_seat', {
         defaultValue: Sequelize.UUIDV4,
         primaryKey: true
     },
-    status: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
-    },
     showId: {
         type: Sequelize.UUID,
         allowNull: false,
@@ -226,6 +244,12 @@ const Booked_Seat = sequelize.define('booked_seat', {
         type: Sequelize.UUID,
         allowNull: false
     }
+},{
+    indexes: [
+        { fields: ["showId"] },
+        { fields: ["seatId"] },
+        { fields: ["bookingId"] }
+    ]
 });
 
 Show.hasMany(Booked_Seat, {
