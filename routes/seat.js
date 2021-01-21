@@ -40,11 +40,6 @@ const { Validator } = require('node-input-validator');
  *        type: string
  *       required: false
  *     - in: query
- *       name: movieId
- *       schema:
- *        type: string
- *       required: false
- *     - in: query
  *       name: theatreId
  *       schema:
  *        type: string
@@ -89,17 +84,8 @@ router.get("/", loginAuthorizer(false), async function (req, res) {
 
         let theatreId = req.query.theatreId;
         let showId = req.query.showId;
-        let movieId = req.query.movieId;
         
-        if(showId || movieId){
-            if(!showId){
-                showId = (await models.Show.findOne({
-                    where: {
-                        movieId: movieId
-                    }
-                })).id;
-            }
-
+        if(showId){
             let booked_seats = models.Booked_Seat.findAll({
                 where: {
                     showId: showId
@@ -136,6 +122,11 @@ router.get("/", loginAuthorizer(false), async function (req, res) {
                 });
 
                 res.status(200).send(output);
+                return;
+            })
+            .catch(error => {
+                console.log(error);
+                res.status(500).send(error.message);
                 return;
             });
         }

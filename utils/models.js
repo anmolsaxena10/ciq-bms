@@ -7,7 +7,7 @@ const db_pass = process.env.DB_PASS || "Abc@123";
 const sequelize = new Sequelize(db, db_user, db_pass, {
     host: 'localhost',
     dialect: 'postgres',
-    // logging: false
+    logging: false
 });
 
 try{
